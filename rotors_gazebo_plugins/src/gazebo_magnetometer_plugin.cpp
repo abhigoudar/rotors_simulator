@@ -17,7 +17,7 @@
 // MODULE HEADER INCLUDE
 #include "rotors_gazebo_plugins/gazebo_magnetometer_plugin.h"
 
-#include <mav_msgs/default_topics.h>  // This comes from the mav_comm repo
+#include <mav_msgs/default_topics.hpp>  // This comes from the mav_comm repo
 
 #include "ConnectGazeboToRosTopic.pb.h"
 

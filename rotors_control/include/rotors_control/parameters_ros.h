@@ -1,7 +1,7 @@
 #ifndef INCLUDE_ROTORS_CONTROL_PARAMETERS_ROS_H_
 #define INCLUDE_ROTORS_CONTROL_PARAMETERS_ROS_H_
 
-#include <ros/ros.h>
+#include <rclcpp/rclcpp.h>
 
 #include "rotors_control/parameters.h"
 

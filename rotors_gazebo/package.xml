@@ -1,4 +1,6 @@
-<package format="2">
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format2.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
   <name>rotors_gazebo</name>
   <version>2.2.3</version>
   <description>The rotors_gazebo package</description>
@@ -17,7 +19,7 @@
   <url type="website">https://github.com/ethz-asl/rotors_simulator</url>
   <url type="bugtracker">https://github.com/ethz-asl/rotors_simulator/issues</url>
 
-  <buildtool_depend>catkin</buildtool_depend>
+  <buildtool_depend>ament_cmake</buildtool_depend>
 
   <depend>gazebo_msgs</depend>
   <depend>gazebo_plugins</depend>
@@ -27,6 +29,16 @@
   <depend>roscpp</depend>
   <depend>rotors_gazebo_plugins</depend>
   <depend>sensor_msgs</depend>
-  <depend>xacro</depend>
+  <depend>rclcpp</depend>
+  <depend>std_srvs</depend>
+
+  <buildtool_depend>eigen3_cmake_module</buildtool_depend>
+  <build_depend>eigen</build_depend>
+  <buildtool_export_depend>eigen3_cmake_module</buildtool_export_depend>
+  <build_export_depend>eigen</build_export_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
 
 </package>

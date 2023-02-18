@@ -21,7 +21,7 @@
 #include <gazebo/common/common.hh>
 #include <gazebo/gazebo.hh>
 #include <gazebo/physics/physics.hh>
-#include <mav_msgs/default_topics.h>
+#include <mav_msgs/default_topics.hpp>
 
 #include "Actuators.pb.h"
 #include "RollPitchYawrateThrust.pb.h"

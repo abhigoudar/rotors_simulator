@@ -1,10 +1,24 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.5)
 project(rotors_description)
 
-find_package(catkin REQUIRED)
+if(NOT CMAKE_C_STANDARD)
+  set(CMAKE_C_STANDARD 99)
+endif()
 
-catkin_package()
+if(NOT CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 14)
+endif()
 
-install(DIRECTORY launch DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
-install(DIRECTORY meshes DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
-install(DIRECTORY urdf DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+find_package(ament_cmake REQUIRED)
+
+install(
+    DIRECTORY launch
+    DESTINATION share/${PROJECT_NAME})
+install(
+    DIRECTORY meshes
+    DESTINATION share/${PROJECT_NAME})
+install(
+    DIRECTORY urdf
+    DESTINATION share/${PROJECT_NAME})
+
+    ament_package()

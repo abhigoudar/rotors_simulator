@@ -1,22 +1,43 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.5)
 project(rotors_comm)
-find_package(catkin REQUIRED
-  COMPONENTS cmake_modules geometry_msgs message_generation octomap_msgs std_msgs)
+
+
+if(NOT CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 14)
+endif()
+
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  add_compile_options(-Wall -Wextra -Wpedantic)
+endif()
+
+find_package(ament_cmake REQUIRED)
+find_package(rosidl_default_generators REQUIRED)
+
+find_package(std_msgs REQUIRED)
+find_package(geometry_msgs REQUIRED)
+find_package(octomap_msgs REQUIRED)
 
 # Declare the service files to be built
-add_service_files(
-  FILES
-  Octomap.srv
-  RecordRosbag.srv
+set(srv_files
+  "srv/Octomap.srv"
+  "srv/RecordRosbag.srv"
 )
 
-add_message_files(
-  FILES
-  WindSpeed.msg
+set(msg_files
+  "msg/WindSpeed.msg"
 )
 
-generate_messages(DEPENDENCIES geometry_msgs octomap_msgs std_msgs)
+set(DEPENDENCIES
+  std_msgs
+  geometry_msgs
+  octomap_msgs)
 
-catkin_package(
-  CATKIN_DEPENDS message_runtime
+  rosidl_generate_interfaces(${PROJECT_NAME}
+  ${msg_files}
+  ${srv_files}
+  DEPENDENCIES ${DEPENDENCIES}
+  ADD_LINTER_TESTS
 )
+
+ament_export_dependencies(rosidl_default_runtime)
+ament_package()

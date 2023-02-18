@@ -1,7 +1,15 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.5)
 project(rotors_gazebo)
 
 add_definitions(-std=c++11)
+
+if(NOT CMAKE_C_STANDARD)
+  set(CMAKE_C_STANDARD 99)
+endif()
+
+if(NOT CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 14)
+endif()
 
 #--------------------------#
 # Generation of SDF models #
@@ -10,12 +18,12 @@ add_definitions(-std=c++11)
 # We need Gazebo version >= 3.0.0 to generate iris.sdf file
 # (gz sdf ... command needs to be available)
 find_package(gazebo REQUIRED)
-find_package(PythonInterp REQUIRED)
+find_package(Python3 COMPONENTS Interpreter)
 
 if(${gazebo_VERSION_MAJOR} GREATER 2)
     message(STATUS "Building iris.sdf.")
     
-    set(enable_mavlink_interface "true")
+    set(enable_mavlink_interface "false")
     set(enable_ground_truth "false")
     set(enable_logging "false")
     set(enable_camera "false")
@@ -44,38 +52,54 @@ if(NO_ROS)
   return()
 endif()
 
-find_package(catkin REQUIRED COMPONENTS gazebo_msgs geometry_msgs mav_msgs roscpp sensor_msgs)
+find_package(ament_cmake REQUIRED)
 
-catkin_package(
-  CATKIN_DEPENDS
+find_package(gazebo_msgs REQUIRED)
+find_package(geometry_msgs REQUIRED)
+find_package(mav_msgs REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(sensor_msgs REQUIRED)
+find_package(std_srvs REQUIRED)
+
+find_package(eigen3_cmake_module REQUIRED)
+find_package(Eigen3)
+
+set(DEPENDENCIES
     gazebo_msgs
     geometry_msgs
     mav_msgs
-    roscpp
+    rclcpp
     sensor_msgs
+    std_srvs
 )
 
-include_directories(include ${catkin_INCLUDE_DIRS})
+include_directories(
+  include
+  ${EIGEN3_INCLUDE_DIRS}
+)
 
-add_executable(waypoint_publisher src/waypoint_publisher.cpp)
-target_link_libraries(waypoint_publisher ${catkin_LIBRARIES})
-add_dependencies(waypoint_publisher ${catkin_EXPORTED_TARGETS})
+# add_executable(waypoint_publisher src/waypoint_publisher.cpp)
+# target_link_libraries(waypoint_publisher ${catkin_LIBRARIES})
+# ament_target_dependencis(waypoint_publisher ${DEPENDENCIES})
 
-add_executable(waypoint_publisher_file src/waypoint_publisher_file.cpp)
-target_link_libraries(waypoint_publisher_file ${catkin_LIBRARIES})
-add_dependencies(waypoint_publisher_file ${catkin_EXPORTED_TARGETS})
+# add_executable(waypoint_publisher_file src/waypoint_publisher_file.cpp)
+# target_link_libraries(waypoint_publisher_file ${catkin_LIBRARIES})
+# ament_target_dependencis(waypoint_publisher_file ${DEPENDENCIES})
 
 add_executable(hovering_example src/hovering_example.cpp)
 target_link_libraries(hovering_example ${catkin_LIBRARIES})
-add_dependencies(hovering_example ${catkin_EXPORTED_TARGETS})
+ament_target_dependencies(hovering_example ${DEPENDENCIES})
 
 foreach(dir launch models resource worlds)
    install(DIRECTORY ${dir}/
-      DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/${dir})
+      DESTINATION share/${PROJECT_NAME}/${dir}/)
 endforeach(dir)
 
-install(TARGETS waypoint_publisher waypoint_publisher_file hovering_example
-  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+install(TARGETS hovering_example
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
 )
+
+ament_export_dependencies(eigen3_cmake_module ${DEPENDENCIES})
+ament_package()

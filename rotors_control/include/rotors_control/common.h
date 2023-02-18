@@ -23,9 +23,9 @@
 
 #include <assert.h>
 
-#include <mav_msgs/conversions.h>
-#include <mav_msgs/default_topics.h>
-#include <nav_msgs/Odometry.h>
+#include <mav_msgs/conversions.hpp>
+#include <mav_msgs/default_topics.hpp>
+#include <nav_msgs/msg/odometry.hpp>
 
 #include "rotors_control/parameters.h"
 
@@ -68,7 +68,7 @@ struct EigenOdometry {
   Eigen::Vector3d angular_velocity;
 };
 
-inline void eigenOdometryFromMsg(const nav_msgs::OdometryConstPtr& msg,
+inline void eigenOdometryFromMsg(const nav_msgs::msg::Odometry::SharedPtr& msg,
                                  EigenOdometry* odometry) {
   odometry->position = mav_msgs::vector3FromPointMsg(msg->pose.pose.position);
   odometry->orientation = mav_msgs::quaternionFromMsg(msg->pose.pose.orientation);

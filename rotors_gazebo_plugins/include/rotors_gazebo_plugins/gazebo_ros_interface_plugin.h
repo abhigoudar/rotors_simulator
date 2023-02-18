@@ -28,10 +28,9 @@
 #include "gazebo/msgs/msgs.hh"
 
 //=================== ROS =====================//
-#include <mav_msgs/default_topics.h>
-#include <ros/callback_queue.h>
-#include <ros/ros.h>
-#include <tf/transform_broadcaster.h>
+#include <mav_msgs/default_topics.hpp>
+#include <rclcpp/rclcpp.hpp>
+#include <tf2_ros/transform_broadcaster.h>
 
 //============= GAZEBO MSG TYPES ==============//
 #include "ConnectGazeboToRosTopic.pb.h"
@@ -56,23 +55,24 @@
 #include "WrenchStamped.pb.h"
 
 //=============== ROS MSG TYPES ===============//
-#include <geometry_msgs/Point.h>
-#include <geometry_msgs/PointStamped.h>
-#include <geometry_msgs/Pose.h>
-#include <geometry_msgs/PoseWithCovarianceStamped.h>
-#include <geometry_msgs/TransformStamped.h>
-#include <geometry_msgs/TwistStamped.h>
-#include <geometry_msgs/WrenchStamped.h>
-#include <mav_msgs/Actuators.h>
-#include <mav_msgs/RollPitchYawrateThrust.h>
-#include <nav_msgs/Odometry.h>
-#include <rotors_comm/WindSpeed.h>
-#include <sensor_msgs/FluidPressure.h>
-#include <sensor_msgs/Imu.h>
-#include <sensor_msgs/JointState.h>
-#include <sensor_msgs/MagneticField.h>
-#include <sensor_msgs/NavSatFix.h>
-#include <std_msgs/Float32.h>
+#include <geometry_msgs/msg/point.hpp>
+#include <geometry_msgs/msg/point_stamped.hpp>
+#include <geometry_msgs/msg/pose.hpp>
+#include <geometry_msgs/msg/pose_with_covariance_stamped.hpp>
+#include <geometry_msgs/msg/transform_stamped.hpp>
+#include <geometry_msgs/msg/twist_stamped.hpp>
+#include <geometry_msgs/msg/wrench_stamped.hpp>
+#include <mav_msgs/msg/actuators.hpp>
+#include <mav_msgs/msg/roll_pitch_yawrate_thrust.hpp>
+#include <nav_msgs/msg/odometry.hpp>
+#include <rotors_comm/msg/wind_speed.hpp>
+#include <sensor_msgs/msg/fluid_pressure.hpp>
+#include <sensor_msgs/msg/imu.hpp>
+#include <sensor_msgs/msg/joint_state.hpp>
+#include <sensor_msgs/msg/magnetic_field.hpp>
+#include <sensor_msgs/msg/nav_sat_fix.hpp>
+#include <std_msgs/msg/float32.hpp>
+#include <builtin_interfaces/msg/time.hpp>
 
 #include "rotors_gazebo_plugins/common.h"
 
@@ -145,7 +145,7 @@ class GazeboRosInterfacePlugin : public WorldPlugin {
   template <typename GazeboMsgT, typename RosMsgT>
   void ConnectHelper(void (GazeboRosInterfacePlugin::*fp)(
                          const boost::shared_ptr<GazeboMsgT const>&,
-                         ros::Publisher),
+                         typename rclcpp::Publisher<RosMsgT>::SharedPtr),
                      GazeboRosInterfacePlugin* ptr, std::string gazeboNamespace,
                      std::string gazeboTopicName, std::string rosTopicName,
                      transport::NodePtr gz_node_handle);
@@ -159,7 +159,7 @@ class GazeboRosInterfacePlugin : public WorldPlugin {
   transport::NodePtr gz_node_handle_;
 
   /// \brief  Handle for the ROS node.
-  ros::NodeHandle* ros_node_handle_;
+  rclcpp::Node::SharedPtr ros_node_handle_;
 
   /// \brief  Pointer to the world.
   physics::WorldPtr world_;
@@ -201,93 +201,95 @@ class GazeboRosInterfacePlugin : public WorldPlugin {
 
   void ConvertHeaderGzToRos(
       const gz_std_msgs::Header& gz_header,
-      std_msgs::Header_<std::allocator<void> >* ros_header);
+      std_msgs::msg::Header_<std::allocator<void> >* ros_header);
 
   void ConvertHeaderRosToGz(
-      const std_msgs::Header_<std::allocator<void> >& ros_header,
+      const std_msgs::msg::Header_<std::allocator<void> >& ros_header,
       gz_std_msgs::Header* gz_header);
 
   // ============================================ //
   // ===== GAZEBO->ROS CALLBACKS/CONVERTERS ===== //
   // ============================================ //
 
-  // ACTUATORS
+//   // ACTUATORS
   void GzActuatorsMsgCallback(GzActuatorsMsgPtr& gz_actuators_msg,
-                              ros::Publisher ros_publisher);
-  mav_msgs::Actuators ros_actuators_msg_;
+    rclcpp::Publisher<mav_msgs::msg::Actuators>::SharedPtr ros_publisher);
+  mav_msgs::msg::Actuators ros_actuators_msg_;
 
   // FLOAT32
   void GzFloat32MsgCallback(GzFloat32MsgPtr& gz_float_32_msg,
-                            ros::Publisher ros_publisher);
-  std_msgs::Float32 ros_float_32_msg_;
+    rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr ros_publisher);
+  std_msgs::msg::Float32 ros_float_32_msg_;
 
   // FLUID PRESSURE
   void GzFluidPressureMsgCallback(GzFluidPressureMsgPtr& gz_fluid_pressure_msg,
-                                  ros::Publisher ros_publisher);
-  sensor_msgs::FluidPressure ros_fluid_pressure_msg_;
+    rclcpp::Publisher<sensor_msgs::msg::FluidPressure>::SharedPtr ros_publisher);
+  sensor_msgs::msg::FluidPressure ros_fluid_pressure_msg_;
 
   // IMU
-  void GzImuMsgCallback(GzImuPtr& gz_imu_msg, ros::Publisher ros_publisher);
-  sensor_msgs::Imu ros_imu_msg_;
+  void GzImuMsgCallback(GzImuPtr& gz_imu_msg,
+    rclcpp::Publisher<sensor_msgs::msg::Imu>::SharedPtr ros_publisher);
+  sensor_msgs::msg::Imu ros_imu_msg_;
 
   // JOINT STATE
   void GzJointStateMsgCallback(GzJointStateMsgPtr& gz_joint_state_msg,
-                               ros::Publisher ros_publisher);
-  sensor_msgs::JointState ros_joint_state_msg_;
+    rclcpp::Publisher<sensor_msgs::msg::JointState>::SharedPtr ros_publisher);
+  sensor_msgs::msg::JointState ros_joint_state_msg_;
 
   // MAGNETIC FIELD
   void GzMagneticFieldMsgCallback(GzMagneticFieldMsgPtr& gz_magnetic_field_msg,
-                                  ros::Publisher ros_publisher);
-  sensor_msgs::MagneticField ros_magnetic_field_msg_;
+    rclcpp::Publisher<sensor_msgs::msg::MagneticField>::SharedPtr ros_publisher);
+  sensor_msgs::msg::MagneticField ros_magnetic_field_msg_;
 
   // NAT SAT FIX (GPS)
   void GzNavSatFixCallback(GzNavSatFixPtr& gz_nav_sat_fix_msg,
-                           ros::Publisher ros_publisher);
-  sensor_msgs::NavSatFix ros_nav_sat_fix_msg_;
+    rclcpp::Publisher<sensor_msgs::msg::NavSatFix>::SharedPtr ros_publisher);
+  sensor_msgs::msg::NavSatFix ros_nav_sat_fix_msg_;
 
   // ODOMETRY
   void GzOdometryMsgCallback(GzOdometryMsgPtr& gz_odometry_msg,
-                             ros::Publisher ros_publisher);
-  nav_msgs::Odometry ros_odometry_msg_;
+    rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr ros_publisher);
+  nav_msgs::msg::Odometry ros_odometry_msg_;
 
   // POSE
   void GzPoseMsgCallback(GzPoseMsgPtr& gz_pose_msg,
-                         ros::Publisher ros_publisher);
-  geometry_msgs::Pose ros_pose_msg_;
+    rclcpp::Publisher<geometry_msgs::msg::Pose>::SharedPtr ros_publisher);
+  geometry_msgs::msg::Pose ros_pose_msg_;
 
   // POSE WITH COVARIANCE STAMPED
   void GzPoseWithCovarianceStampedMsgCallback(
       GzPoseWithCovarianceStampedMsgPtr& gz_pose_with_covariance_stamped_msg,
-      ros::Publisher ros_publisher);
-  geometry_msgs::PoseWithCovarianceStamped
+      rclcpp::Publisher<geometry_msgs::msg::PoseWithCovarianceStamped>::SharedPtr
+        ros_publisher);
+  geometry_msgs::msg::PoseWithCovarianceStamped
       ros_pose_with_covariance_stamped_msg_;
 
   // POSITION STAMPED
   void GzVector3dStampedMsgCallback(
       GzVector3dStampedMsgPtr& gz_vector_3d_stamped_msg,
-      ros::Publisher ros_publisher);
-  geometry_msgs::PointStamped ros_position_stamped_msg_;
+      rclcpp::Publisher<geometry_msgs::msg::PointStamped>::SharedPtr ros_publisher);
+  geometry_msgs::msg::PointStamped ros_position_stamped_msg_;
 
   // TRANSFORM STAMPED
   void GzTransformStampedMsgCallback(
       GzTransformStampedMsgPtr& gz_transform_stamped_msg,
-      ros::Publisher ros_publisher);
-  geometry_msgs::TransformStamped ros_transform_stamped_msg_;
+      rclcpp::Publisher<geometry_msgs::msg::TransformStamped>::SharedPtr ros_publisher);
+  geometry_msgs::msg::TransformStamped ros_transform_stamped_msg_;
 
   // TWIST STAMPED
   void GzTwistStampedMsgCallback(GzTwistStampedMsgPtr& gz_twist_stamped_msg,
-                                 ros::Publisher ros_publisher);
-  geometry_msgs::TwistStamped ros_twist_stamped_msg_;
+    rclcpp::Publisher<geometry_msgs::msg::TwistStamped>::SharedPtr ros_publisher);
+  geometry_msgs::msg::TwistStamped ros_twist_stamped_msg_;
 
   // WIND SPEED
   void GzWindSpeedMsgCallback(GzWindSpeedMsgPtr& gz_wind_speed_msg,
-                              ros::Publisher ros_publisher);
-  rotors_comm::WindSpeed ros_wind_speed_msg_;
+    rclcpp::Publisher<rotors_comm::msg::WindSpeed>::SharedPtr ros_publisher);
+  rotors_comm::msg::WindSpeed ros_wind_speed_msg_;
 
   // WRENCH STAMPED
   void GzWrenchStampedMsgCallback(GzWrenchStampedMsgPtr& gz_wrench_stamped_msg,
-                                  ros::Publisher ros_publisher);
-  geometry_msgs::WrenchStamped ros_wrench_stamped_msg_;
+    rclcpp::Publisher<geometry_msgs::msg::WrenchStamped>::SharedPtr ros_publisher);
+  geometry_msgs::msg::WrenchStamped ros_wrench_stamped_msg_;
 
   // ============================================ //
   // ===== ROS->GAZEBO CALLBACKS/CONVERTERS ===== //
@@ -295,23 +297,23 @@ class GazeboRosInterfacePlugin : public WorldPlugin {
 
   // ACTUATORS (change name??? motor control? motor speed?)
   void RosActuatorsMsgCallback(
-      const mav_msgs::ActuatorsConstPtr& ros_actuators_msg_ptr,
+      const mav_msgs::msg::Actuators::SharedPtr ros_actuators_msg_ptr,
       gazebo::transport::PublisherPtr gz_publisher_ptr);
 
   // COMMAND MOTOR SPEED (this is the same as ACTUATORS!, merge???)
   void RosCommandMotorSpeedMsgCallback(
-      const mav_msgs::ActuatorsConstPtr& ros_command_motor_speed_msg_ptr,
+      const mav_msgs::msg::Actuators::SharedPtr ros_command_motor_speed_msg_ptr,
       gazebo::transport::PublisherPtr gz_publisher_ptr);
 
   // ROLL PITCH YAWRATE THRUST
   void RosRollPitchYawrateThrustMsgCallback(
-      const mav_msgs::RollPitchYawrateThrustConstPtr&
+      const mav_msgs::msg::RollPitchYawrateThrust::SharedPtr
           ros_roll_pitch_yawrate_thrust_msg_ptr,
       gazebo::transport::PublisherPtr gz_publisher_ptr);
 
   // WIND SPEED
   void RosWindSpeedMsgCallback(
-      const rotors_comm::WindSpeedConstPtr& ros_wind_speed_msg_ptr,
+      const rotors_comm::msg::WindSpeed::SharedPtr ros_wind_speed_msg_ptr,
       gazebo::transport::PublisherPtr gz_publisher_ptr);
 
   // ============================================ //
@@ -327,8 +329,8 @@ class GazeboRosInterfacePlugin : public WorldPlugin {
   void GzBroadcastTransformMsgCallback(
       GzTransformStampedWithFrameIdsMsgPtr& broadcast_transform_msg);
 
-  tf::Transform tf_;
-  tf::TransformBroadcaster transform_broadcaster_;
+  geometry_msgs::msg::TransformStamped tf_;
+  std::unique_ptr<tf2_ros::TransformBroadcaster> transform_broadcaster_;
 };
 
 }  // namespace gazebo

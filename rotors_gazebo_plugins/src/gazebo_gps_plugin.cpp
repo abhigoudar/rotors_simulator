@@ -19,7 +19,7 @@
 #include "rotors_gazebo_plugins/gazebo_gps_plugin.h"
 
 // 3RD PARTY
-#include "mav_msgs/default_topics.h"
+#include "mav_msgs/default_topics.hpp"
 
 // USER
 #include "ConnectGazeboToRosTopic.pb.h"

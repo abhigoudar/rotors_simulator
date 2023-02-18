@@ -1,4 +1,4 @@
-Header header
+std_msgs/Header header
 
 # Message should be expressed in the frame_id specified in the header.
 

@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+
+<launch>
+  <arg name="rvizconfig" default="$(find-pkg-share rotors_description)/rviz/techpod_model_view.rviz" />
+
+  <param from="$(find-pkg-share xacro)/xacro.py 
+		$(find-pkg-share rotors_description)/urdf/techpod.xacro
+		namespace:=techpod" />
+  <param name="use_gui" value="True"/>
+
+  <node name="joint_state_publisher" pkg="joint_state_publisher" exec="joint_state_publisher" />
+  <node name="robot_state_publisher" pkg="robot_state_publisher" exec="robot_state_publisher" />
+  <node name="rviz" pkg="rviz" exec="rviz" args="-d $(var rvizconfig)" required="true" />
+</launch>

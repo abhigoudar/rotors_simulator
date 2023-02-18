@@ -1,4 +1,6 @@
-<package format="2">
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
   <name>rotors_simulator</name>
   <version>2.2.3</version>
   <description>RotorS is a MAV gazebo simulator.</description>
@@ -18,7 +20,7 @@
   <url type="bugtracker">https://github.com/ethz-asl/rotors_simulator/issues</url>
 
   <!-- Dependencies which this package needs to build itself. -->
-  <buildtool_depend>catkin</buildtool_depend>
+  <buildtool_depend>ament_cmake</buildtool_depend>
 
   <!-- Dependencies needed after this package is compiled. -->
   <exec_depend>rotors_comm</exec_depend>
@@ -31,6 +33,6 @@
   <exec_depend>rqt_rotors</exec_depend>
 
   <export>
-    <metapackage/>
+    <build_type>ament_cmake</build_type>
   </export>
 </package>

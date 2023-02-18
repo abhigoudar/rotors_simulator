@@ -1,4 +1,6 @@
-<package format="2">
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format2.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
   <name>rotors_control</name>
   <version>2.2.3</version>
   <description>RotorS control package</description>
@@ -17,14 +19,17 @@
   <url type="website">https://github.com/ethz-asl/rotors_simulator</url>
   <url type="bugtracker">https://github.com/ethz-asl/rotors_simulator/issues</url>
 
-  <buildtool_depend>catkin</buildtool_depend>
+  <buildtool_depend>ament_cmake</buildtool_depend>
 
-  <depend>cmake_modules</depend>
   <depend>dynamic_reconfigure</depend>
   <depend>geometry_msgs</depend>
   <depend>mav_msgs</depend>
   <depend>nav_msgs</depend>
   <depend>roscpp</depend>
   <depend>sensor_msgs</depend>
+
+<export>
+  <build_type>ament_cmake</build_type>
+</export>
 
 </package>

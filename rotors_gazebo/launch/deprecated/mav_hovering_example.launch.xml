@@ -1,0 +1,41 @@
+<launch>
+  <arg name="mav_name" default="firefly"/>
+  <arg name="world_name" default="basic"/>
+  <arg name="enable_logging" default="false" />
+  <arg name="enable_ground_truth" default="true" />
+  <arg name="log_file" default="$(var mav_name)" />
+  <arg name="debug" default="false"/>
+  <arg name="gui" default="true"/>
+  <arg name="paused" default="true"/>
+  <!-- The following line causes gzmsg and gzerr messages to be printed to the console
+      (even when Gazebo is started through roslaunch) -->
+  <arg name="verbose" default="false"/>
+
+  <!-- <env name="GAZEBO_MODEL_PATH" value="${GAZEBO_MODEL_PATH}:$(find-pkg-share rotors_gazebo)/models"/>
+  <env name="GAZEBO_RESOURCE_PATH" value="${GAZEBO_RESOURCE_PATH}:$(find-pkg-share rotors_gazebo)/models"/> -->
+  <include file="$(find-pkg-share gazebo_ros)/launch/empty_world.launch.xml">
+    <arg name="world_name" value="$(find-pkg-share rotors_gazebo)/worlds/$(var world_name).world" />
+    <arg name="debug" value="$(var debug)" />
+    <arg name="paused" value="$(var paused)" />
+    <arg name="gui" value="$(var gui)" />
+    <arg name="verbose" value="$(var verbose)"/>
+  </include>
+
+  <group ns="$(var mav_name)">
+    <include file="$(find-pkg-share rotors_gazebo)/launch/spawn_mav.launch">
+      <arg name="mav_name" value="$(var mav_name)" />
+      <arg name="model" value="$(find-pkg-share rotors_description)/urdf/mav_generic_odometry_sensor.gazebo" />
+      <arg name="enable_logging" value="$(var enable_logging)" />
+      <arg name="enable_ground_truth" value="$(var enable_ground_truth)" />
+      <arg name="log_file" value="$(var log_file)"/>
+    </include>
+    <node name="lee_position_controller_node" pkg="rotors_control" type="lee_position_controller_node" output="screen">
+      <rosparam command="load" file="$(find-pkg-share rotors_gazebo)/resource/lee_controller_$(var mav_name).yaml" />
+      <rosparam command="load" file="$(find-pkg-share rotors_gazebo)/resource/$(var mav_name).yaml" />
+      <remap from="odometry" to="odometry_sensor1/odometry" />
+    </node>
+    <node name="hovering_example" pkg="rotors_gazebo" type="hovering_example" output="screen"/>
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
+  </group>
+</launch>

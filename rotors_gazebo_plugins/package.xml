@@ -1,4 +1,6 @@
-<package format="2">
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format2.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
   <name>rotors_gazebo_plugins</name>
   <version>2.2.3</version>
   <description>The rotors_gazebo_plugins package</description>
@@ -18,10 +20,9 @@
   <url type="website">https://github.com/ethz-asl/rotors_simulator</url>
   <url type="bugtracker">https://github.com/ethz-asl/rotors_simulator/issues</url>
 
-  <buildtool_depend>catkin</buildtool_depend>
+  <buildtool_depend>ament_make</buildtool_depend>
 
   <!-- Dependencies needed to compile this package. -->
-  <depend>cmake_modules</depend>
   <depend>cv_bridge</depend>
   <depend>gazebo</depend>
   <depend>gazebo_plugins</depend>
@@ -34,12 +35,16 @@
   <depend>octomap_msgs</depend>
   <depend>octomap_ros</depend>
   <depend>octomap</depend>
-  <depend>rosbag</depend>
-  <depend>roscpp</depend>
+  <depend>rosbag2</depend>
+  <depend>rclcpp</depend>
   <depend>rotors_comm</depend>
   <depend>rotors_control</depend>
   <depend>std_srvs</depend>
   <depend>tf</depend>
   <depend>yaml-cpp</depend>
+
+<export>
+  <build_type>ament_cmake</build_type>
+</export>
 
 </package>
