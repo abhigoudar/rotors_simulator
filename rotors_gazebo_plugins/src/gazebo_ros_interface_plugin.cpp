@@ -35,7 +35,7 @@ GazeboRosInterfacePlugin::GazeboRosInterfacePlugin()
 GazeboRosInterfacePlugin::~GazeboRosInterfacePlugin() {
 
   // Shutdown and delete ROS node handle
-  rclcpp::shutdown();
+  executor->cancel();
 }
 
 void GazeboRosInterfacePlugin::Load(physics::WorldPtr _world,
@@ -100,6 +100,16 @@ void GazeboRosInterfacePlugin::Load(physics::WorldPtr _world,
   gz_broadcast_transform_sub_ = gz_node_handle_->Subscribe(
       "~/" + kBroadcastTransformSubtopic,
       &GazeboRosInterfacePlugin::GzBroadcastTransformMsgCallback, this);
+
+  // ============================================ //
+  // ===== ROS SPIN FOR CALLBACKS ==== //
+  // ============================================ //
+  ros_cb_thread_ = std::thread([&]()
+  {
+    executor = std::make_shared<rclcpp::executors::SingleThreadedExecutor>();
+    executor->add_node(ros_node_handle_);
+    executor->spin();
+  });
 }
 
 void GazeboRosInterfacePlugin::OnUpdate(const common::UpdateInfo& _info) {

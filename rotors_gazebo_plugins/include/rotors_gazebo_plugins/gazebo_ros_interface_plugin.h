@@ -158,8 +158,10 @@ class GazeboRosInterfacePlugin : public WorldPlugin {
   /// \brief  Handle for the Gazebo node.
   transport::NodePtr gz_node_handle_;
 
-  /// \brief  Handle for the ROS node.
+  /// \brief  Handles for the ROS node.
   rclcpp::Node::SharedPtr ros_node_handle_;
+  std::thread ros_cb_thread_;
+  rclcpp::executors::SingleThreadedExecutor::SharedPtr executor;
 
   /// \brief  Pointer to the world.
   physics::WorldPtr world_;

@@ -43,7 +43,7 @@ int main(int argc, char** argv) {
 
   std_srvs::srv::Empty srv;
   auto gz_phy_client = node->create_client<std_srvs::srv::Empty>
-    ("/gazebo/unpause_physics");
+    ("/unpause_physics");
   auto req = std::make_shared<std_srvs::srv::Empty::Request>();
 
   unsigned int i = 0;

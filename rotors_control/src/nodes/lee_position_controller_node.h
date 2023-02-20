@@ -24,58 +24,55 @@
 #include <boost/bind.hpp>
 #include <Eigen/Eigen>
 #include <stdio.h>
+#include <chrono>
 
-#include <geometry_msgs/PoseStamped.h>
-#include <mav_msgs/Actuators.h>
-#include <mav_msgs/AttitudeThrust.h>
-#include <mav_msgs/eigen_mav_msgs.h>
-#include <nav_msgs/Odometry.h>
-#include <ros/callback_queue.h>
-#include <ros/ros.h>
-#include <trajectory_msgs/MultiDOFJointTrajectory.h>
+#include <geometry_msgs/msg/pose_stamped.hpp>
+#include <mav_msgs/msg/actuators.hpp>
+#include <mav_msgs/msg/attitude_thrust.hpp>
+#include <mav_msgs/eigen_mav_msgs.hpp>
+#include <nav_msgs/msg/odometry.hpp>
+#include <rclcpp/rclcpp.hpp>
+#include <trajectory_msgs/msg/multi_dof_joint_trajectory.hpp>
 
 #include "rotors_control/common.h"
 #include "rotors_control/lee_position_controller.h"
 
 namespace rotors_control {
 
-class LeePositionControllerNode {
+class LeePositionControllerNode : public rclcpp::Node {
  public:
-  LeePositionControllerNode(const ros::NodeHandle& nh, const ros::NodeHandle& private_nh);
+  LeePositionControllerNode(const rclcpp::NodeOptions&);
   ~LeePositionControllerNode();
 
+  void RunController(const rclcpp::Node::SharedPtr);
   void InitializeParams();
   void Publish();
 
  private:
-  ros::NodeHandle nh_;
-  ros::NodeHandle private_nh_;
 
   LeePositionController lee_position_controller_;
-
+  rclcpp::Node::SharedPtr node;
   std::string namespace_;
 
   // subscribers
-  ros::Subscriber cmd_trajectory_sub_;
-  ros::Subscriber cmd_multi_dof_joint_trajectory_sub_;
-  ros::Subscriber cmd_pose_sub_;
-  ros::Subscriber odometry_sub_;
+  rclcpp::Subscription<trajectory_msgs::msg::MultiDOFJointTrajectory>::SharedPtr cmd_multi_dof_joint_trajectory_sub_;
+  rclcpp::Subscription<geometry_msgs::msg::PoseStamped>::SharedPtr cmd_pose_sub_;
+  rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odometry_sub_;
 
-  ros::Publisher motor_velocity_reference_pub_;
+  rclcpp::Publisher<mav_msgs::msg::Actuators>::SharedPtr motor_velocity_reference_pub_;
 
   mav_msgs::EigenTrajectoryPointDeque commands_;
-  std::deque<ros::Duration> command_waiting_times_;
-  ros::Timer command_timer_;
+  std::deque<rclcpp::Duration> command_waiting_times_;
+  rclcpp::TimerBase::SharedPtr command_timer_;
 
-  void TimedCommandCallback(const ros::TimerEvent& e);
+  void TimedCommandCallback();
 
   void MultiDofJointTrajectoryCallback(
-      const trajectory_msgs::MultiDOFJointTrajectoryConstPtr& trajectory_reference_msg);
+      const trajectory_msgs::msg::MultiDOFJointTrajectory::SharedPtr);
 
-  void CommandPoseCallback(
-      const geometry_msgs::PoseStampedConstPtr& pose_msg);
+  void CommandPoseCallback(const geometry_msgs::msg::PoseStamped::SharedPtr);
 
-  void OdometryCallback(const nav_msgs::OdometryConstPtr& odometry_msg);
+  void OdometryCallback(const nav_msgs::msg::Odometry::SharedPtr);
 };
 }
 

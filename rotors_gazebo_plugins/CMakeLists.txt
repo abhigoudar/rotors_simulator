@@ -123,7 +123,9 @@ if (NOT NO_ROS)
   find_package(rotors_comm REQUIRED)
   find_package(rotors_control REQUIRED)
   find_package(std_srvs REQUIRED)
+  find_package(sensor_msgs REQUIRED)
   find_package(tf2 REQUIRED)
+  find_package(nav_msgs REQUIRED)
   find_package(tf2_ros REQUIRED)
 endif()
 
@@ -526,7 +528,7 @@ if (NOT NO_ROS)
   add_library(rotors_gazebo_ros_interface_plugin SHARED src/gazebo_ros_interface_plugin.cpp)
   target_link_libraries(rotors_gazebo_ros_interface_plugin ${target_linking_LIBRARIES} )
   ament_target_dependencies(rotors_gazebo_ros_interface_plugin gazebo rclcpp mav_msgs
-    rclcpp tf2 tf2_ros geometry_msgs rotors_comm)
+    rclcpp tf2 tf2_ros geometry_msgs rotors_comm sensor_msgs nav_msgs)
   list(APPEND targets_to_install rotors_gazebo_ros_interface_plugin)
 endif()
 

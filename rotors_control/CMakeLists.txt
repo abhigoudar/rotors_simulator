@@ -21,6 +21,7 @@ find_package(geometry_msgs REQUIRED)
 find_package(mav_msgs REQUIRED)
 find_package(nav_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
+find_package(trajectory_msgs REQUIRED)
 
 find_package(eigen3_cmake_module REQUIRED)
 find_package(Eigen3)
@@ -31,6 +32,7 @@ set(DEPENDENCIES
    nav_msgs
    mav_msgs
    sensor_msgs
+   trajectory_msgs
 )
 
 include_directories(
@@ -50,10 +52,10 @@ add_library(roll_pitch_yawrate_thrust_controller
 target_link_libraries(roll_pitch_yawrate_thrust_controller ${catkin_LIBRARIES})
 ament_target_dependencies(roll_pitch_yawrate_thrust_controller ${DEPENDENCIES})
 
-# add_executable(lee_position_controller_node src/nodes/lee_position_controller_node.cpp)
-# ament_target_dependencies(lee_position_controller_node ${DEPENDENCIES})
-# target_link_libraries(lee_position_controller_node
-#   lee_position_controller)
+add_executable(lee_position_controller_node src/nodes/lee_position_controller_node.cpp)
+ament_target_dependencies(lee_position_controller_node ${DEPENDENCIES})
+target_link_libraries(lee_position_controller_node
+  lee_position_controller)
 
 
 # target_link_libraries(roll_pitch_yawrate_thrust_controller ${catkin_LIBRARIES})
@@ -71,21 +73,28 @@ ament_target_dependencies(roll_pitch_yawrate_thrust_controller ${DEPENDENCIES})
 # )
 
 install(TARGETS lee_position_controller
-  roll_pitch_yawrate_thrust_controller
-  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
 
-# install(TARGETS lee_position_controller_node
-#   RUNTIME DESTINATION lib/${PROJECT_NAME}
-# )
+install(TARGETS lee_position_controller_node
+  RUNTIME DESTINATION lib/${PROJECT_NAME}
+)
 
 install(
   DIRECTORY include/
   DESTINATION include/
 )
 
+install(
+  DIRECTORY resources
+  DESTINATION share/${PROJECT_NAME}
+)
+
+install(
+  DIRECTORY launch
+  DESTINATION share/${PROJECT_NAME}
+)
+
 ament_export_dependencies(eigen3_cmake_module ${DEPENDENCIES})
-ament_export_libraries(lee_position_controller
-  roll_pitch_yawrate_thrust_controller)
 ament_export_include_directories(include)
 ament_package()

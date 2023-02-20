@@ -96,9 +96,7 @@ foreach(dir launch models resource worlds)
 endforeach(dir)
 
 install(TARGETS hovering_example
-  ARCHIVE DESTINATION lib
-  LIBRARY DESTINATION lib
-  RUNTIME DESTINATION bin
+  RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
 
 ament_export_dependencies(eigen3_cmake_module ${DEPENDENCIES})
