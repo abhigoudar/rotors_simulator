@@ -23,7 +23,7 @@ template<typename T> inline void GetRosParameter(const rclcpp::Node::SharedPtr n
   }
   else
   {
-    RCLCPP_INFO_STREAM(node->get_logger(),
+    RCLCPP_DEBUG_STREAM(node->get_logger(),
      "Value:" << key << ": " << default_value);
   }
 
@@ -42,23 +42,23 @@ inline void GetRotorConfiguration(const rclcpp::Node::SharedPtr node,
 
     key = rotor_configuration_string + std::to_string(i) + ".angle";
     node->get_parameter(key, rotor.angle);
-    RCLCPP_INFO_STREAM(node->get_logger(), "Val:" << "/" << key << ": " << rotor.angle);
+    RCLCPP_DEBUG_STREAM(node->get_logger(), "Val:" << "/" << key << ": " << rotor.angle);
 
     key = rotor_configuration_string + std::to_string(i) + ".arm_length";
     node->get_parameter(key, rotor.arm_length);
-    RCLCPP_INFO_STREAM(node->get_logger(), "Val:" << "/" << key << ": " << rotor.arm_length);
+    RCLCPP_DEBUG_STREAM(node->get_logger(), "Val:" << "/" << key << ": " << rotor.arm_length);
 
     key = rotor_configuration_string + std::to_string(i) + ".rotor_force_constant";
     node->get_parameter(key, rotor.rotor_force_constant);
-    RCLCPP_INFO_STREAM(node->get_logger(), "Val:" << "/" << key << ": " << rotor.rotor_force_constant);
+    RCLCPP_DEBUG_STREAM(node->get_logger(), "Val:" << "/" << key << ": " << rotor.rotor_force_constant);
 
     key = rotor_configuration_string + std::to_string(i) + ".rotor_moment_constant";
     node->get_parameter(key, rotor.rotor_moment_constant);
-    RCLCPP_INFO_STREAM(node->get_logger(), "Val:" << "/" << key << ": " << rotor.rotor_moment_constant);
+    RCLCPP_DEBUG_STREAM(node->get_logger(), "Val:" << "/" << key << ": " << rotor.rotor_moment_constant);
 
     key = rotor_configuration_string + std::to_string(i) + ".direction";
     node->get_parameter(key, rotor.direction);
-    RCLCPP_INFO_STREAM(node->get_logger(), "Val:" << "/" << key << ": " << rotor.direction);
+    RCLCPP_DEBUG_STREAM(node->get_logger(), "Val:" << "/" << key << ": " << rotor.direction);
 
     rotor_configuration->rotors.push_back(rotor);
     ++i;
